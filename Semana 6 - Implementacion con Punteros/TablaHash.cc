@@ -3,11 +3,11 @@
 
 using namespace std;
 
-// Estructura para los nodos de la lista enlazada
+// PASO 1: Estructura del NodoHash
 struct NodoHash {
     string clave;
     int valor;
-    NodoHash* siguiente; // Puntero al siguiente nodo en caso de colisión
+    NodoHash* siguiente; // Puntero al siguiente nodo en caso de colision
 
     // Constructor del nodo
     NodoHash(string c, int v) {
@@ -17,18 +17,19 @@ struct NodoHash {
     }
 };
 
+// PASO 2: La Clase TablaHash y el Arreglo de Punteros
 class TablaHash {
 private:
     NodoHash** tabla; // Puntero doble: Un arreglo de punteros a NodoHash
     int capacidad;
 
-    // Función hash privada
+    // Funcion hash privada
     int funcionHash(string clave) {
         int suma = 0;
         for (char c : clave) {
             suma += c;
         }
-        return suma % capacidad; // Asegura que el índice esté en rango
+        return suma % capacidad; // Asegura que el indice este en rango
     }
 
 public:
@@ -37,28 +38,28 @@ public:
         capacidad = cap;
         tabla = new NodoHash*[capacidad]; // Crear el arreglo de punteros
 
-        // Inicializar todos los punteros a nullptr (vacíos)
-        for (int i = 0; i < i < capacidad; i++) {
+        // Inicializar todos los punteros a nullptr (vacios)
+        for (int i = 0; i < capacidad; i++) {
             tabla[i] = nullptr;
         }
     }
 
-    // Método de Inserción
+    // PASO 3: Insercion de Elementos
     void insertar(string clave, int valor) {
         int indice = funcionHash(clave);
         NodoHash* nuevoNodo = new NodoHash(clave, valor);
 
-        // Si no hay colisión, es el primer elemento
+        // Si no hay colision, es el primer elemento
         if (tabla[indice] == nullptr) {
             tabla[indice] = nuevoNodo;
         } else {
-            // Manejo de colisión: Enlazar al inicio de la lista
+            // Manejo de colision: Enlazar al inicio de la lista
             nuevoNodo->siguiente = tabla[indice];
             tabla[indice] = nuevoNodo;
         }
     }
 
-    // Método de Búsqueda
+    // PASO 4: Busqueda mediante Punteros
     int buscar(string clave) {
         int indice = funcionHash(clave);
         NodoHash* actual = tabla[indice];
@@ -66,14 +67,14 @@ public:
         // Recorrer la lista enlazada usando el puntero
         while (actual != nullptr) {
             if (actual->clave == clave) {
-                return actual->valor; // Se encontró
+                return actual->valor; // Se encontro
             }
             actual = actual->siguiente; // Avanzar
         }
-        return -1; // -1 indica que no se encontró
+        return -1; // -1 indica que no se encontro
     }
 
-    // Método de Eliminación
+    // PASO 5: Eliminacion de Nodos
     void eliminar(string clave) {
         int indice = funcionHash(clave);
         NodoHash* actual = tabla[indice];
@@ -85,7 +86,7 @@ public:
                 if (anterior == nullptr) {
                     tabla[indice] = actual->siguiente;
                 } else {
-                    // Si el nodo está en medio o al final
+                    // Si el nodo esta en medio o al final
                     anterior->siguiente = actual->siguiente;
                 }
                 delete actual; // Liberar memoria del puntero
@@ -98,7 +99,7 @@ public:
         cout << "Clave no encontrada para eliminar." << endl;
     }
 
-    // Destructor (Prevención de Fugas de Memoria)
+    // PASO 6: Destructor (Prevencion de Fugas de Memoria)
     ~TablaHash() {
         for (int i = 0; i < capacidad; i++) {
             NodoHash* actual = tabla[i];
@@ -108,10 +109,11 @@ public:
                 delete temporal; // Liberar cada nodo
             }
         }
-        delete[] tabla; // Liberar el arreglo dinámico de punteros
+        delete[] tabla; // Liberar el arreglo dinamico de punteros
     }
 };
 
+// PASO 7: Funcion Main
 int main() {
     TablaHash miTabla(10); // Tabla con capacidad de 10 buckets
 
@@ -132,5 +134,5 @@ int main() {
     miTabla.eliminar("Ana");
     cout << "Busqueda post-eliminacion (Ana): " << miTabla.buscar("Ana") << endl;
 
-    return 0; // El destructor se llama automáticamente aquí
+    return 0; // El destructor se llama automaticamente aqui
 }
